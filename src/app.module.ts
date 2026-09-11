@@ -7,6 +7,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getTypeOrmConfig } from './config/typeorm.config.js';
 import { UserModule } from './user/user.module.js';
+import { ReviewModule } from './review/review.module.js';
+import { BankModule } from './bank/bank.module.js';
 
 @Module({
   // приймає модулі
@@ -22,6 +24,8 @@ import { UserModule } from './user/user.module.js';
     TaskModule,
     MovieModule,
     UserModule,
+    ReviewModule,
+    BankModule,
   ],
   controllers: [AppController],
   providers: [AppService],

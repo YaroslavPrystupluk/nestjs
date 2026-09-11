@@ -1,18 +1,20 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity.js';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { UserDto } from './dto/user.dto.js';
+import { BankEntity } from '../bank/entities/bank.entity.js';
+import { PassportUserEntity } from './entities/passport.entity.js';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(BankEntity)
+    private readonly bankRepository: Repository<BankEntity>,
+    @InjectRepository(PassportUserEntity)
+    private readonly passportRepository: Repository<PassportUserEntity>,
   ) {}
 
   async findAll(): Promise<UserEntity[]> {
@@ -23,6 +25,11 @@ export class UserService {
       order: {
         createdAt: 'desc',
       },
+      relations: {
+        banks: true,
+        passport: true,
+      },
+
       // select: {
       //   firstName: true,
       //   lastName: true,
@@ -33,7 +40,13 @@ export class UserService {
   }
 
   async findById(id: string): Promise<UserEntity> {
-    const user = await this.userRepository.findOneBy({ id });
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: {
+        banks: true,
+        passport: true,
+      },
+    });
 
     if (!user) {
       throw new NotFoundException(`Користувач з номером ${id} не знайдено`);
@@ -43,7 +56,33 @@ export class UserService {
   }
 
   async create(dto: UserDto): Promise<UserEntity> {
-    const user = this.userRepository.create(dto);
+    const { firstName, lastName, birthday, isMarried, passportId, bankIds } =
+      dto;
+
+    const banks = await this.bankRepository.find({
+      where: {
+        id: In(bankIds),
+      },
+    });
+
+    let passport: PassportUserEntity | null = null;
+
+    if (passportId) {
+      passport = this.passportRepository.create({ series: passportId });
+      await this.passportRepository.save(passport);
+    }
+
+    if (!banks || !banks.length) {
+      throw new NotFoundException('Банк не знайдено');
+    }
+    const user = this.userRepository.create({
+      firstName,
+      lastName,
+      passport,
+      birthday,
+      isMarried,
+      banks,
+    });
 
     return await this.userRepository.save(user);
   }

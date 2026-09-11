@@ -2,10 +2,19 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  Generated,
-  PrimaryColumn,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
+  type Relation,
 } from 'typeorm';
+import { ReviewEntity } from '../../review/entities/review.entity.js';
+import { BankEntity } from '../../bank/entities/bank.entity.js';
+import { PassportUserEntity } from './passport.entity.js';
+import { IsString, IsUUID } from 'class-validator';
 
 enum COUNTRY {
   UKR = 'ukr',
@@ -16,8 +25,7 @@ enum COUNTRY {
 
 @Entity({ name: 'users' })
 export class UserEntity {
-  @PrimaryColumn()
-  @Generated('uuid')
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ name: 'first_name' })
@@ -39,8 +47,36 @@ export class UserEntity {
     default: 0.0,
   })
   rating: number;
+
   @Column({ type: 'enum', enum: COUNTRY, default: COUNTRY.UKR })
   country: COUNTRY;
+
+  @OneToMany(() => ReviewEntity, (review) => review.user)
+  reviews: Relation<ReviewEntity[]>;
+
+  @ManyToMany(() => BankEntity, (bank) => bank.users)
+  @JoinTable({
+    name: 'user_banks',
+    joinColumn: {
+      name: 'user_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'bank_id',
+      referencedColumnName: 'id',
+    },
+  })
+  banks: Relation<BankEntity[]>;
+
+  @Column({ name: 'passport_id', type: 'uuid', nullable: true })
+  passportId: string;
+
+  @OneToOne(() => PassportUserEntity, (passport) => passport.user, {
+    onDelete: 'CASCADE',
+    nullable: true,
+  })
+  @JoinColumn({ name: 'passport_id' })
+  passport: Relation<PassportUserEntity> | null;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

@@ -5,8 +5,9 @@ import {
   IsDate,
   IsBoolean,
   IsOptional,
+  IsArray,
+  IsUUID,
 } from 'class-validator';
-import { StartsWith } from '../../task/decorators/starts-with.decorator.js';
 import { Transform } from 'class-transformer';
 
 function parseCustomDate(value: string): Date | null {
@@ -46,4 +47,11 @@ export class UserDto {
   @IsBoolean()
   @IsOptional()
   isMarried: boolean;
+
+  @IsString()
+  passportId: string;
+
+  @IsArray()
+  @IsUUID('4', { each: true })
+  bankIds: string[];
 }
