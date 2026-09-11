@@ -6,8 +6,8 @@ import { CreateBankDto } from './dto/create-bank.dto.js';
 export class BankController {
   constructor(private readonly bankService: BankService) {}
 
-  @Post()
-  create(@Body() dto: CreateBankDto) {
-    return this.bankService.create(dto);
-  }
+  // @Post()
+  // create(@Body() dto: CreateBankDto) {
+  //   return this.bankService.create(dto);
+  // }
 }
