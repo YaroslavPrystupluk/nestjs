@@ -32,6 +32,12 @@ export class UserDto {
   @Length(2, 50, { message: 'Поле повино містити від 3 до 50 символві' })
   firstName: string;
 
+  @IsString({ message: 'Поле повино бути рядком' })
+  @IsNotEmpty({ message: 'Поле не повинно бути пустим' })
+  @Length(2, 50, { message: 'Поле повино містити від 3 до 50 символві' })
+  @IsOptional()
+  lastName: string;
+
   @IsDate({ message: 'Поле має бути коректною датою у форматі ДД.ММ.РРРР' })
   @Transform(({ value }) => parseCustomDate(value))
   @IsNotEmpty({ message: 'Поле не повинно бути пустим' })
@@ -39,5 +45,5 @@ export class UserDto {
 
   @IsBoolean()
   @IsOptional()
-  married: boolean;
+  isMarried: boolean;
 }

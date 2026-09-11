@@ -17,9 +17,9 @@ export class UserService {
 
   async findAll(): Promise<UserEntity[]> {
     return await this.userRepository.find({
-      where: {
-        married: true,
-      },
+      // where: {
+      //   isMarried: true,
+      // }, // виведе поля по умові цій
       order: {
         createdAt: 'desc',
       },
@@ -28,7 +28,7 @@ export class UserService {
       //   lastName: true,
       //   birthday: true,
       //   createdAt: true,
-      // },
+      // }, // виведе тільки ті поля які в select
     });
   }
 
