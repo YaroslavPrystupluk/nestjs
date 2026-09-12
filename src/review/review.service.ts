@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { ReviewEntity } from './entities/review.entity.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserService } from '../user/user.service.js';
 import { CreateReviewDto } from './dto/create-review.dto.js';
 
 @Injectable()
