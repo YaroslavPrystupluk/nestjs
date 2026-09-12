@@ -87,4 +87,51 @@ export class MovieService {
       },
     });
   }
+
+  async update(id: string, dto: CreateMovieDto): Promise<Movie> {
+    const { title, releaseYear, imageUrl, actorIds } = dto;
+
+    const movie = await this.fineByID(id);
+
+    const actors = await this.prismaService.actor.findMany({
+      where: {
+        id: { in: actorIds },
+      },
+    });
+
+    if (!actors || !actors.length) {
+      throw new NotFoundException('Не знайдено акторів чи актора');
+    }
+
+    await this.prismaService.movie.update({
+      where: {
+        id,
+      },
+      data: {
+        title,
+        releaseYear,
+        poster: imageUrl
+          ? {
+              create: {
+                url: imageUrl,
+              },
+            }
+          : undefined,
+        actors: {
+          connect: actors.map((actor) => ({
+            id: actor.id,
+          })),
+        },
+      },
+    });
+
+    return movie;
+  }
+
+  async delete(id: string): Promise<string> {
+    const movie = await this.fineByID(id);
+    await this.prismaService.movie.delete({ where: { id: movie.id } });
+
+    return id;
+  }
 }
