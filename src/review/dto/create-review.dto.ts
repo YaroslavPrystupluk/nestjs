@@ -17,5 +17,5 @@ export class CreateReviewDto {
   rating: number;
 
   @IsUUID()
-  userId: string;
+  movieId: string;
 }

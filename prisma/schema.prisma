@@ -44,7 +44,7 @@ model MoviePoster {
 model Review {
   id        String   @id @default(uuid())
   text      String
-  rating    Decimal  @default(0.0)
+  rating    Decimal  @default(0.0) @db.Decimal(3, 1)
   movie     Movie    @relation("movie_reviews", fields: [movieId], references: [id]) //many to one
   movieId   String   @map("movie_id")
   createdAt DateTime @default(now()) @map("created_at")
