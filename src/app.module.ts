@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { AppService } from './app.service.js';
 import { PrismaModule } from './prisma/prisma.module.js';
-import { ChatModule } from './chat/chat.module.js';
+import { AppController } from './app.controller.js';
 
 @Module({
   imports: [
@@ -10,7 +11,8 @@ import { ChatModule } from './chat/chat.module.js';
       expandVariables: true,
     }),
     PrismaModule,
-    ChatModule,
   ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
