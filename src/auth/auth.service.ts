@@ -5,14 +5,14 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { RegisteRequest } from './dto/register.dto.js';
 import { hash, verify } from 'argon2';
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from './interfaces/jwt.interface.js';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
-import { LoginRequest } from './dto/login.dto.js';
 import type { Request, Response } from 'express';
 import { isDev } from '../utils/is-dev.util.js';
+import { RegisterInput } from './inputs/register.input.js';
+import { LoginInput } from './inputs/login.input.js';
 
 @Injectable()
 export class AuthService {
@@ -33,8 +33,8 @@ export class AuthService {
     >('JWT_REFRESH_TOKEN_TTL');
     this.COOKIE_DOMAIN = configService.getOrThrow<string>('COOKIE_DOMAIN');
   }
-  async register(res: Response, dto: RegisteRequest) {
-    const { name, email, password } = dto;
+  async register(res: Response, input: RegisterInput) {
+    const { name, email, password } = input;
     const existUser = await this.prismaService.user.findUnique({
       where: { email },
     });
@@ -56,8 +56,8 @@ export class AuthService {
     return this.auth(res, user.id);
   }
 
-  async login(res: Response, dto: LoginRequest) {
-    const { email, password } = dto;
+  async login(res: Response, input: LoginInput) {
+    const { email, password } = input;
     const user = await this.prismaService.user.findUnique({
       where: { email },
       select: {
