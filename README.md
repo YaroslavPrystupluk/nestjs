@@ -25,6 +25,15 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Project comands
+```bash
+$ npx prisma studio
+$ npx prisma migrate dev --name назва_зміни
+$ npx prisma generate
+$ npx prisma migrate reset
+$ http://localhost:3000/graphql playground
+```
+
 ## Project setup
 
 ```bash
