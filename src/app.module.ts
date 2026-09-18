@@ -6,6 +6,7 @@ import { AppController } from './app.controller.js';
 import { FileModule } from './file/file.module.js';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'node:path';
+import { TaskModule } from './task/task.module.js';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { join } from 'node:path';
     }),
     PrismaModule,
     FileModule,
+    TaskModule,
   ],
   controllers: [AppController],
   providers: [AppService],
