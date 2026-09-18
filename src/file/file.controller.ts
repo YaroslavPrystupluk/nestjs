@@ -6,14 +6,19 @@ import {
   Post,
   UploadedFile,
   UseInterceptors,
+  Version,
 } from '@nestjs/common';
 import { FileService } from './file.service.js';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-@Controller('file')
+@Controller({
+  path: 'file',
+  version: '2',
+})
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 
+  @Version('3')
   @UseInterceptors(FileInterceptor('file'))
   @Post()
   uploadFile(
