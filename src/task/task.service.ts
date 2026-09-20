@@ -3,16 +3,19 @@ import { Cron, CronExpression, Interval, Timeout } from '@nestjs/schedule';
 
 @Injectable()
 export class TaskService {
-  // @Cron(CronExpression.EVERY_10_SECONDS)
-  // handleCron() {
-  //   console.log('Задача виконується кожні 10 секунд');
-  // }
-  // @Interval(1000)
-  // handleInterval() {
-  //   console.log('Interval задача кожну секунду');
-  // }
-  // @Timeout(5000)
-  // handleTimeout() {
-  //   console.log('Timeout задача кожні 5 секунд після старта');
-  // }
+  private logger = new Logger(TaskService.name);
+  @Cron(CronExpression.EVERY_10_SECONDS)
+  handleCron() {
+    this.logger.log('Задача виконується кожні 10 секунд');
+  }
+
+  @Interval(1000)
+  handleInterval() {
+    this.logger.debug('Interval задача кожну секунду');
+  }
+
+  @Timeout(5000)
+  handleTimeout() {
+    this.logger.error('Timeout задача кожні 5 секунд після старта');
+  }
 }

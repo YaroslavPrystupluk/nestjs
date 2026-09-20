@@ -3,13 +3,16 @@ import { AppModule } from './app.module.js';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 import { ConfigService } from '@nestjs/config';
+import { CustomLogger } from './common/logger/logger.service.js';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+  });
 
   const config = app.get(ConfigService);
   config.getOrThrow('POSTGRES_USER');
-
+  app.useLogger(new CustomLogger());
   app.use(cookieParser());
   app.setGlobalPrefix('api');
   app.enableVersioning({
